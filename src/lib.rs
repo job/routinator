@@ -32,6 +32,7 @@ extern crate rpki;
 extern crate slab;
 extern crate tokio;
 extern crate tokio_process;
+extern crate toml;
 
 pub mod config;
 pub mod origins;

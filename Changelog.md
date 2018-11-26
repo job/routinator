@@ -8,10 +8,14 @@ Breaking Changes
 
 New
 
+* Configuration can now be read from a config file via the -c option.
+
 Bug Fixes
 
 * The default output format was accidentally changed to `none`. It is
   `csv` again.
+* Thanks to copy-and-paste, the value of the history option was accidentally
+  read from the refresh command line argument.
 
 Dependencies
 

@@ -28,6 +28,7 @@ slab            = "^0.4"
 syslog		= "4.0"
 tokio           = "^0.1"
 tokio-process   = "^0.2"
+toml            = "^0.4"
 
 [patch.crates-io]
 rpki = { git = "https://github.com/NLnetLabs/rpki-rs.git" }

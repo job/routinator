@@ -1,6 +1,6 @@
 //! Configuration.
 
-use std::{cmp, env, fmt, fs, io, ops, process};
+use std::{cmp, env, fmt, fs, ops, process};
 use std::io::{Read, Write};
 use std::net::{SocketAddr, ToSocketAddrs};
 use std::path::{Path, PathBuf};
@@ -9,6 +9,7 @@ use std::time::Duration;
 use clap::{App, Arg, ArgMatches};
 use dirs::home_dir;
 use log::LevelFilter;
+use tempfile::NamedTempFile;
 use toml;
 
 
@@ -64,12 +65,20 @@ pub struct Config {
 }
 
 impl Config {
+    /// Creates the configuration from command line arguments.
+    ///
+    /// Parses the arguments first. If the `-c` option is present, proceeds
+    /// to read the config file. Then produces a config from both the file
+    /// and the arguments, overwriting any settings in the file with
+    /// command line argument options.
+    ///
+    /// If any error happens or if the arguments demand doing something and
+    /// then exit, the function will not return.
     pub fn create() -> Self {
         let args = Args::create();
 
         if args.is_present("man") {
-            let stdout = io::stdout();
-            let _ = stdout.lock().write_all(MAN_PAGE);
+            Self::man_page();
             process::exit(0);
         }
 
@@ -275,6 +284,34 @@ impl Config {
 
         (cache_dir, tal_dir)
     }
+
+    fn man_page() {
+        let mut target = match NamedTempFile::new() {
+            Ok(file) => file,
+            Err(err) => {
+                println!(
+                    "Cannot create temporary file for man page: {}.",
+                    err
+                );
+                process::exit(1);
+            }
+        };
+        if let Err(err) = target.write_all(MAN_PAGE) {
+            println!(
+                "Cannot write to temporary file for man page: {}.",
+                err
+            );
+            process::exit(1);
+        }
+        if let Err(err) = process::Command::new("man")
+                                        .arg(target.path()).status() {
+            println!(
+                "Failed to run man: {}", err
+            );
+            process::exit(1);
+        }
+        process::exit(0);
+    }
 }
 
 
@@ -309,7 +346,7 @@ impl<'a> Args<'a> {
                  .takes_value(true)
             )
             .arg(Arg::with_name("cachedir")
-                 .short("c")
+                 .short("C")
                  .long("cache-dir")
                  .value_name("DIR")
                  .help("sets the cache directory")

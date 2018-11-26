@@ -30,6 +30,7 @@ extern crate json;
 extern crate num_cpus;
 extern crate rpki;
 extern crate slab;
+extern crate tempfile;
 extern crate tokio;
 extern crate tokio_process;
 extern crate toml;

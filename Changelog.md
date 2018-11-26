@@ -5,6 +5,10 @@
 Breaking Changes
 
 * Add trust anchor information to the CSV, JSON, and RPSL output. [21]
+* The --man option now spawns the man command instead of just outputting
+  the man page.
+* The cache-dir option now has the short option `-C` to make room for `-c`
+  being the config file.
 
 New
 
